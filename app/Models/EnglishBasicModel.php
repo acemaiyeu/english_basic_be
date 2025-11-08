@@ -42,9 +42,9 @@ class EnglishBasicModel {
                 });
             });
         }
-
         $limit = $request['limit'] ?? 10;
-        $query->with('details');
+        
+        
         if($limit === 1){
             return $query->fisrt();
         }else{
@@ -53,7 +53,7 @@ class EnglishBasicModel {
     }
     public function getListLessonDetailByLessonId($request) {
         $query = LessonDetail::query();
-
+        $query->whereNull('deleted_at');
         $limit = $request['limit'] ?? 10;
         if (!empty($request['lesson_id'])){
             $query->where('lesson_id', $request['lesson_id']);

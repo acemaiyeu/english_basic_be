@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\Lesson;
 use App\Transformers\ListLessonTransformer;
 use App\Transformers\ListLessonDetailTransformer;
+use Carbon\Carbon;
 
 class EnglishBasicController extends Controller
 {
@@ -19,13 +20,15 @@ class EnglishBasicController extends Controller
 
     function getListLesson (Request $re) {
        $list_lessions =  $this->englishBasicModal->getListLesson($re);
-       return fractal($list_lessions, new ListLessonTransformer())->respond();
+       $userAgent = $re->header('User-Agent');
+       return fractal($list_lessions, new ListLessonTransformer($userAgent, "vocabulary"))->respond();
     }
     function getListLessonDetailByLesson ($lesson_id, Request $re) {
        $re['lesson_id']  = $lesson_id;
        $list_lession_details =  $this->englishBasicModal->getListLessonDetailByLessonId($re);
     //    return response()->json($list_lession_details);
-       return fractal($list_lession_details, new ListLessonDetailTransformer())->respond();
+      $userAgent = $re->header('User-Agent');
+       return fractal($list_lession_details, new ListLessonDetailTransformer($userAgent))->respond();
     }
     function getLessonDetailById ($lesson_detail_id, Request $re) {
        $re['id']  = $lesson_detail_id;
@@ -46,7 +49,7 @@ class EnglishBasicController extends Controller
          }else{
             $answer_text = $answer_id;
             $check_exist = Question::whereNull('deleted_at')->where('id', $question_id)->whereHas('answers', function($query) use($answer_text, $question_id){
-               $query->where('text', $answer_text)->where('question_id', $question_id);
+               $query->where('text', 'like', "%" . $answer_text . "%")->where('question_id', $question_id);
             })->exists();
          }
         
@@ -73,7 +76,9 @@ class EnglishBasicController extends Controller
     }
     function deleteLesson($id) {
        // Logic để xóa lesson theo lesson_id
-       Lesson::where('id', $id)->delete();
+       Lesson::where('id', $id)->update([
+         'deleted_at' => Carbon::now()
+       ]);
        return response()->json([
           "status" => 200,
           "message"   => "Lesson deleted successfully"

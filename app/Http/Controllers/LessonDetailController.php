@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Transformers\ListLessonDetailTransformer;
 use App\Models\LessonDetailModel;
+use App\Models\LessonDetail;
+use Carbon\Carbon;
 
 class LessonDetailController extends Controller
 {
@@ -36,7 +38,8 @@ class LessonDetailController extends Controller
        $re['lesson_id'] = $lesson_id;
        $re['type'] = "vocabulary";
        $list_details =  $this->detailModel->getListLessonDetails($re);
-       return fractal($list_details, new ListLessonDetailTransformer())->respond();
+       $userAgent = $re->header('User-Agent');
+       return fractal($list_details, new ListLessonDetailTransformer($userAgent))->respond();
     }
     function createDetail (Request $re) {
        //
@@ -50,6 +53,17 @@ class LessonDetailController extends Controller
     }
     function deleteDetail ($id) {
        //       
+       LessonDetail::whereNull('deleted_at')->where('id', $id)->update([
+         "deleted_at" => Carbon::now()
+       ]);
+       return response()->json([
+         "status" => 200
+       ]);
+    }
+    function update($id, Request $re){
+       $detail = $this->detailModel->update($id, $re);
+       $userAgent = $re->header('User-Agent');
+       return fractal($detail, new ListLessonDetailTransformer($userAgent))->respond();
     }
 
 }

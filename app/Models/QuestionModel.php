@@ -21,7 +21,7 @@ class QuestionModel {
         }
         if(!empty($request['lesson_detail_title'])){
             $query->whereHas('lessonDetail', function($q) use ($request){
-                $q->where('title_english', 'like', '%'.$request['lesson_detail_title'].'%');
+                $q->where('title_english', $request['lesson_detail_title']);
             });
         }
         if(!empty($request['lesson_id'])){

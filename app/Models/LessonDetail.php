@@ -20,6 +20,7 @@ class LessonDetail extends Model
         'lesson_id', 
         'type', 
         'sound',
+        'result_users',
         'created_at',  
         'updated_at', 
         'deleted_at'

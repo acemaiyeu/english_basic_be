@@ -7,6 +7,7 @@ use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\LessonDetailController;
+use App\Http\Controllers\ListenWriteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::post('/testing-answer', [EnglishBasicController::class, 'testingAnswerByQ
 
 Route::post('/read-excel', [ExcelController::class, 'readExcel']);
 
+
 Route::prefix('admin')->group(function () {
     //Lesson Management
     Route::get('/lessons', [EnglishBasicController::class, 'getLessons']);
@@ -47,6 +49,7 @@ Route::prefix('admin')->group(function () {
     // Lesson Detail Management
     Route::get('/lesson-details', [LessonDetailController::class, 'getListDetails']);
     Route::get('/lesson-detail/{id}', [LessonDetailController::class, 'getDetail']);
+    Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::get('/lesson-detail-by-title/{title}', [LessonDetailController::class, 'getDetailByTitle']);
     Route::get('/lesson-detail-by-lesson-id/{lesson_id}', [LessonDetailController::class, 'getListDetailsByLesson']);
     Route::post('/lesson-detail', [LessonDetailController::class, 'createDetail']);
@@ -71,5 +74,27 @@ Route::prefix('admin')->group(function () {
     Route::get('/answer/{id}', [AnswerController::class, 'getListQuestions']);
     Route::get('/answers-by-question-id/{question_id}', [AnswerController::class, 'getListAnswersByQuestion']);
     Route::delete('/answer/{id}', [AnswerController::class, 'delete']);
+
+
+    //Import 
+    Route::post('/import-question-answers', [QuestionController::class, 'importQuestionAndAnswers']);
+    Route::post('/import-question-answers-v2', [QuestionController::class, 'importQuestionAndAnswersV2']);
     
+
+    // getListListens
+    Route::get('/listens', [ListenWriteController::class, 'getListListens']);
+    Route::get('/listen/{id}', [ListenWriteController::class, 'getDetailListen']);
+    Route::post('/listen', [ListenWriteController::class, 'create']);
+    Route::put('/listen/{id}', [ListenWriteController::class, 'update']);
+    Route::delete('/listen/{id}', [ListenWriteController::class, 'delete']);
+    
+});
+
+
+// routes/api.php
+use App\Events\MessageSent;
+
+Route::post('/send-message', function (Illuminate\Http\Request $request) {
+    broadcast(new MessageSent($request->user, $request->message))->toOthers();
+    return response()->json(['status' => 'Message broadcasted!']);
 });

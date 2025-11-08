@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Lesson extends Model
+class ListenWrite extends Model
 {
     use HasFactory;
-    protected $table = "Lessons";
+    protected $table = "listenwrites";
 
     protected $fillable = [
         'id', 
-        'title_english', 
-        'title_vietnamese', 
-        'total_sentences', 
+        'url_video', 
+        'url_audio', 
+        'value', 
         'created_at',  
-        'updated_at', 
         'deleted_at']; // tuỳ bạn
 
          public function details()

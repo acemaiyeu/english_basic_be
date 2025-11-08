@@ -24,10 +24,10 @@ class LessonDetailModel {
             $query->where('type', $request['type']);
         }
         if(!empty($request['title_english'])){
-            $query->where('title_english', 'like', '%'.$request['title_english'].'%');
+            $query->where('title_english', $request['title_english']);
         }
         if(!empty($request['title_vietnamese'])){
-            $query->where('title_vietnamese', 'like', '%'.$request['title_vietnamese'].'%');
+            $query->where('title_vietnamese', $request['title_vietnamese']);
         }
         if(!empty($request['vocabulary_name'])){
             $query->whereHas('details', function($q) use ($request){
@@ -71,8 +71,40 @@ class LessonDetailModel {
             $detail->title_vietnamese = $request['title_english'];
             $detail->transcription = $request['transcription']??"";
             $detail->means = $request['means']??"";
-            $detail->sound = $request['sound'];
+            $detail->sound = $request['sound']; 
             $detail->type = "ipa"; 
+            $detail->save();
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
+        
+        return $detail;
+    }
+    function update($id, $request) {
+        $detail = LessonDetail::whereNull("deleted_at")->find($id);  
+        if (!$detail) {
+            throw new \Exception('Vocabulary not found');
+        }
+        
+        try{
+            DB::beginTransaction();
+            // $detail->lesson_id = $lesson->id;
+            $detail->title_english = $request['title_english'] ?? $detail->title_english;
+            $detail->title_vietnamese = $request['title_english'] ?? $detail->title_vietnamese;
+            $detail->transcription = $request['transcription'] ?? $detail->transcription;
+            $detail->means = $request['means'] ?? $detail->means;
+            $detail->sound = $request['sound'] ?? $detail->sound;
+            if($request['process']){
+               $users_temp = json_decode($detail->result_users, true) ?? []; // true để trả về mảng thay vì object
+                $users_temp[] = [
+                    'device' => $request->header('User-Agent'),
+                    'process' => $request['process'],
+                ];
+                $detail->result_users = json_encode($users_temp);
+            }            
+            $detail->type = $request['type'] ?? $detail->type; 
             $detail->save();
             DB::commit();
         }catch(\Exception $e){
