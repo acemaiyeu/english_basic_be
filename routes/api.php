@@ -8,6 +8,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\LessonDetailController;
 use App\Http\Controllers\ListenWriteController;
+use \App\Http\Controllers\ExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +39,7 @@ Route::post('/testing-answer', [EnglishBasicController::class, 'testingAnswerByQ
 
 
 Route::post('/read-excel', [ExcelController::class, 'readExcel']);
-
+Route::get('/listens', [ListenWriteController::class, 'getListListens']);
 
 Route::prefix('admin')->group(function () {
     //Lesson Management
@@ -87,6 +88,13 @@ Route::prefix('admin')->group(function () {
     Route::post('/listen', [ListenWriteController::class, 'create']);
     Route::put('/listen/{id}', [ListenWriteController::class, 'update']);
     Route::delete('/listen/{id}', [ListenWriteController::class, 'delete']);
+
+    Route::get('/export', [ExportController::class, 'export']);
+    Route::get('/export-lesson', [ExportController::class, 'exportLesson']);
+    Route::get('/export-vocabulary', [ExportController::class, 'exportVocabulary']);
+
+    
+
     
 });
 
