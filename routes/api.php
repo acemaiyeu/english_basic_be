@@ -97,7 +97,7 @@ Route::prefix('admin')->group(function () {
 
     
 });
-
+Route::get('/listen/{id}', [ListenWriteController::class, 'getDetailListen']);
 
 // routes/api.php
 use App\Events\MessageSent;

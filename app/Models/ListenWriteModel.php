@@ -12,11 +12,13 @@ class ListenWriteModel{
      public function getListListens($request) {
         $query = ListenWrite::query();
         $query->whereNull('deleted_at');
-        
+        if($request['id']){
+            $query->where('id', $request['id']);
+        }
 
         $limit = $request['limit'] ?? 10;
         if($limit === 1){
-            return $query->fisrt();
+            return $query->first();
         }else{
             return $query->paginate($limit);
         }
@@ -27,6 +29,7 @@ class ListenWriteModel{
             DB::beginTransaction();
             $listen->url_video = $request['url_video']??null;
             $listen->url_audio = $request['url_audio']??null;
+             $listen->title = $request['title'];
             $listen->value = $request['value'];
             $listen->save();
             DB::commit();

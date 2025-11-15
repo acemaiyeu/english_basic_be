@@ -14,6 +14,7 @@ class ListenWrite extends Model
         'id', 
         'url_video', 
         'url_audio', 
+        'title', 
         'value', 
         'created_at',  
         'deleted_at']; // tuỳ bạn

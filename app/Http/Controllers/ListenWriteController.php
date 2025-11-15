@@ -24,7 +24,7 @@ class ListenWriteController extends Controller
     function getDetailListen ($id, Request $re) {
        $re['id'] = $id;
        $re['limit'] = 1;
-       $list_detail =  $this->listenModel->getListLessonDetails($re);
+       $list_detail =  $this->listenModel->getListListens($re);
        return fractal($list_detail, new ListListenTransformer())->respond();
     }
 
