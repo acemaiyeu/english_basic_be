@@ -9,6 +9,7 @@ use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\LessonDetailController;
 use App\Http\Controllers\ListenWriteController;
 use \App\Http\Controllers\ExportController;
+use \App\Http\Controllers\GameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,9 @@ Route::post('/testing-answer', [EnglishBasicController::class, 'testingAnswerByQ
 
 Route::post('/read-excel', [ExcelController::class, 'readExcel']);
 Route::get('/listens', [ListenWriteController::class, 'getListListens']);
+
+Route::get('/games', [GameController::class, 'getAll']);
+Route::get('/game/{id}', [GameController::class, 'getDetail']);
 
 Route::prefix('admin')->group(function () {
     //Lesson Management
@@ -92,6 +96,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/export', [ExportController::class, 'export']);
     Route::get('/export-lesson', [ExportController::class, 'exportLesson']);
     Route::get('/export-vocabulary', [ExportController::class, 'exportVocabulary']);
+    Route::get('/export-questions', [ExportController::class, 'exportQuestion']);
+    
 
     
 

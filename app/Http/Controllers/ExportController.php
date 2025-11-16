@@ -7,14 +7,17 @@ use App\Exports\ArrayExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\EnglishBasicModel;
 use App\Models\LessonDetailModel;
+use App\Models\QuestionModel;
 
 class ExportController extends Controller
 {
     protected $lessonModel;
     protected $lessonDetailModel;
-    public function __construct(EnglishBasicModel $model, LessonDetailModel $lmodel) {
+    protected $questionModel;
+    public function __construct(EnglishBasicModel $model, LessonDetailModel $lmodel, QuestionModel $qmodel) {
         $this->lessonModel = $model;
         $this->lessonDetailModel = $lmodel;
+        $this->questionModel = $qmodel;
     }
     public function export()
     {
@@ -64,6 +67,48 @@ class ExportController extends Controller
                     $value->means,
                     $value->result_users
                 ]);
+            }
+        }
+        return Excel::download(new ArrayExport($titles, $data), 'danh_sach.xlsx');
+    }
+    public function exportQuestion(Request $req){
+        
+        $req['limit'] = $req['limit'] ?? 1000;
+        $questions = $this->questionModel->getListQuestions($req);
+
+        if($questions){
+            $titles = ['lesson_detail_id', 'question_id', 'question', 'option 1', 'option 2', 'option 3', 'option 4', 'correct_answer', 'type'];
+            $data = [];
+            $object = [];
+            foreach($questions as $q){
+                $object[] = $q->lesson_detail_id;
+                $object[] = $q->id;
+                $object[] = $q->title_english;
+                if($q->type === "CHOOSE"){
+                    foreach($q->answers as $a){
+                        $object[] = $a->title;
+                    }
+                }
+                if($q->type !== "CHOOSE"){
+                    foreach($q->answers as $a){
+                        $object[] = $a->text;
+                    }
+                }
+                $object[] = $q->answer;
+                $object[] = $q->type;
+                array_push($data, $object);
+                $object = [];
+                // array_push($data, [
+                //     $value->id, 
+                //     $value->lesson_id,
+                //     $value->title_english,
+                //     $value->title_vietnamese,
+                //     $value->transcription,
+                //     $value->type,
+                //     $value->sound,
+                //     $value->means,
+                //     $value->result_users
+                // ]);
             }
         }
         return Excel::download(new ArrayExport($titles, $data), 'danh_sach.xlsx');
