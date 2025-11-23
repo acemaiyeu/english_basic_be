@@ -9,7 +9,7 @@ use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\LessonDetailController;
 use App\Http\Controllers\ListenWriteController;
 use App\Http\Controllers\ChatController;
-
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +28,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // routes/api.php
 
 
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login-admin', [AuthController::class, 'loginAdmin']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::get('profile', [AuthController::class, 'me']);
+});
 
 // Route POST ban đầu (dùng để gửi Job)
 Route::get('/list-lessons', [EnglishBasicController::class, 'getListLesson']);
