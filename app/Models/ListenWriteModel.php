@@ -28,6 +28,7 @@ class ListenWriteModel{
             $listen->url_video = $request['url_video']??null;
             $listen->url_audio = $request['url_audio']??null;
             $listen->value = $request['value'];
+            $listen->title = $request['title']??null;
             $listen->save();
             DB::commit();
         }catch(\Exception $e){
@@ -48,6 +49,7 @@ class ListenWriteModel{
             $listen->url_video = $request['url_video']??$listen->url_video;
             $listen->url_audio = $request['url_audio']??$listen->url_audio;
             $listen->value = $request['value']??$listen->value;
+            $listen->title = $request['title']??$listen->title;
             $listen->save();
             
             DB::commit();

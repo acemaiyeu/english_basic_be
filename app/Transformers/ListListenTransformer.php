@@ -40,7 +40,7 @@ class ListListenTransformer extends TransformerAbstract
             'url_audio' => $listen->url_audio,
             'url_video' => $listen->url_video,
             'value' => $listen->value,
-           
+            'title' => $listen->title,
         ];
     }
 }

@@ -11,7 +11,7 @@ class ChatController extends Controller
     {
         // 1. Lấy câu hỏi từ người dùng
         $userMessage = $request->input('message');
-
+        
         // 2. Cấu hình gửi đến Ollama (Localhost)
         // Lưu ý: stream = false để lấy toàn bộ câu trả lời một lần (dễ xử lý hơn streaming)
         $response = Http::withHeaders([
@@ -19,7 +19,7 @@ class ChatController extends Controller
             ])->timeout(120)->post('http://127.0.0.1:11434/api/chat', [
                 'model' => 'phi3', // <--- Kiểm tra kỹ dòng này
                 'messages' => [
-                    ['role' => 'user', 'content' => 'Hello']
+                    ['role' => 'user', 'content' => $userMessage]
                 ],
                 'stream' => false,
             ]);
