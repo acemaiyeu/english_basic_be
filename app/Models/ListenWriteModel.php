@@ -13,6 +13,9 @@ class ListenWriteModel{
         $query = ListenWrite::query();
         $query->whereNull('deleted_at');
         
+        if(!empty($request['id'])) {
+            $query->where('id', $request['id']);
+        }
 
         $limit = $request['limit'] ?? 10;
         if($limit === 1){
