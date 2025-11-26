@@ -23,7 +23,7 @@ class Question extends Model
 
      public function answers()
     {
-        return $this->hasMany(Answer::class, 'question_id', 'id')->select('id','title','title', 'question_id');
+        return $this->hasMany(Answer::class, 'question_id', 'id')->select('id','title','text', 'question_id');
     }
     public function lessonDetail()
     {

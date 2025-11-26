@@ -10,6 +10,8 @@ use App\Http\Controllers\LessonDetailController;
 use App\Http\Controllers\ListenWriteController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GameController;
+use App\Events\MessageSent; // Đảm bảo import Event của bạn
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -52,6 +54,9 @@ Route::post('/testing-answer', [EnglishBasicController::class, 'testingAnswerByQ
 Route::post('/read-excel', [ExcelController::class, 'readExcel']);
 Route::get('/listens', [ListenWriteController::class, 'getListListens']);
 Route::get('/listen/{id}', [ListenWriteController::class, 'getDetailListen']);
+
+Route::get('/games', [GameController::class, 'getAll']);
+Route::get('/game/{id}', [GameController::class, 'getDetail']);
 
 
 Route::post('/chat-ai', [ChatController::class, 'chat']);
@@ -107,10 +112,24 @@ Route::prefix('admin')->group(function () {
 });
 
 
-// routes/api.php
-use App\Events\MessageSent;
 
 Route::post('/send-message', function (Illuminate\Http\Request $request) {
     broadcast(new MessageSent($request->user, $request->message))->toOthers();
     return response()->json(['status' => 'Message broadcasted!']);
+});
+
+
+Route::post('/send-message', function (Request $request) {
+    // 1. Kiểm tra dữ liệu
+    $request->validate(['message' => 'required|string']);
+
+    $messageContent = $request->input('message');
+    // $channel = $request->input('channel'); // Dùng nếu muốn kênh động
+
+    // 2. Phát sự kiện WebSocket
+    // Sử dụng Event đã được cấu hình với Channel('chat.1.2') và broadcastAs('message.sent')
+    event(new MessageSent($messageContent)); 
+
+    // 3. Trả về thành công
+    return response()->json(['status' => 'success', 'message' => $messageContent]);
 });

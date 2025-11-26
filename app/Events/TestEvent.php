@@ -1,24 +1,37 @@
-<?php 
+<?php
+
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcastNow
+class TestEvent
 {
-    public $message;
-    public function __construct($message)
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Create a new event instance.
+     */
+    public function __construct()
     {
-        // Gán giá trị vào thuộc tính public
-        $this->message = $message; 
+        //
     }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
     public function broadcastOn()
     {
-        // Sử dụng Channel, KHÔNG cần xác thực
         return new Channel('chat.1.2'); 
     }
+
     public function broadcastAs()
     {
         return 'message.sent'; 
@@ -32,4 +45,5 @@ class MessageSent implements ShouldBroadcastNow
             // Có thể thêm 'user_id', 'timestamp', v.v.
         ];
     }
+    // ...
 }
