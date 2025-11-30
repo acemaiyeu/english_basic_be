@@ -61,7 +61,7 @@ Route::get('/game/{id}', [GameController::class, 'getDetail']);
 
 Route::post('/chat-ai', [ChatController::class, 'chat']);
 
-Route::prefix('admin')->group(function () {
+Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     //Lesson Management
     Route::get('/lessons', [EnglishBasicController::class, 'getLessons']);
     Route::post('/lesson', [EnglishBasicController::class, 'createLesson']);
