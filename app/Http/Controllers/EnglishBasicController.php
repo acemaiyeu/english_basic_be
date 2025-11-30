@@ -43,6 +43,7 @@ class EnglishBasicController extends Controller
       $question_id = $req['question_id'];
       $answer_id = $req['answer_id'];
       $type = $req['type'];
+      $question = Question::whereNull('deleted_at')->where('id', $question_id)->first();
 
          if($type === "CHOOSE"){
             $check_exist = Question::whereNull('deleted_at')->where('id', $question_id)->where('answer', $answer_id)->exists();
@@ -52,11 +53,10 @@ class EnglishBasicController extends Controller
                $query->where('text', 'like', "%" . $answer_text . "%")->where('question_id', $question_id);
             })->exists();
          }
-        
-
             return response()->json([
                "status" => 200,
-               "data"   => $check_exist
+               "data"   => $check_exist,
+               "answer_id" => $question->answer
             ]);
     }
     function getLessons(Request $re) {
