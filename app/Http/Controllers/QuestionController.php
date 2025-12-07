@@ -188,27 +188,31 @@ public function importQuestionAndAnswersV2(Request $request)
                 }
                 DB::beginTransaction();
                     if(empty($question->lesson_detail_id)){
-                        $question->lesson_detail_id = $value[0];
+                        $question->lesson_detail_id = $value[0]??$request['lesson_detail_id'];
                     }
                     $question->title_english = $value[2];
                     $question->title_vietnamese = $value[2];
                     $question->type = $value[8];
                     $question->save();
 
-
-                    $answer = new Answer();
-                    $answer->question_id = $question->id;
-                    $answer->title = $value[3];
-                    $answer->text = $value[3];
-                    $answer->created_at = Carbon::now();
-                    $answer->save();
-
-                    $answer = new Answer();
-                    $answer->question_id = $question->id;
-                    $answer->title = $value[4];
-                    $answer->text = $value[4];
-                    $answer->created_at = Carbon::now();
-                    $answer->save();
+                    if($value[3]){
+                        $answer = new Answer();
+                        $answer->question_id = $question->id;
+                        $answer->title = $value[3];
+                        $answer->text = $value[3];
+                        $answer->created_at = Carbon::now();
+                        $answer->save();
+                    }
+                    
+                    if($value[4]){
+                        $answer = new Answer();
+                        $answer->question_id = $question->id;
+                        $answer->title = $value[4];
+                        $answer->text = $value[4];
+                        $answer->created_at = Carbon::now();
+                        $answer->save();
+                    }
+                    
                     if($value[5]){
                         $answer = new Answer();
                         $answer->question_id = $question->id;
@@ -229,9 +233,9 @@ public function importQuestionAndAnswersV2(Request $request)
 
 
                 //
-                if($value[7] == "CHOOSE"){
+                if($value[8] == "CHOOSE"){
                     $index_answer_correct = 1;
-                    $found_answer  = Answer::whereNull('deleted_at')->where('title', $value[$value[7] + 1])->where('question_id', $question->id)->first();
+                    $found_answer  = Answer::whereNull('deleted_at')->where('title', $value[$value[7] + 2])->where('question_id', $question->id)->first();
                     $question->answer = $found_answer->id;
                     $question->save();
                 }

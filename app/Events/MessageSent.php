@@ -8,28 +8,39 @@ use Illuminate\Queue\SerializesModels;
 
 class MessageSent implements ShouldBroadcastNow
 {
+    use InteractsWithSockets, SerializesModels;
+    
     public $message;
-    public function __construct($message)
+    public $index_question;
+    public $channelName; // 💡 THÊM: Thuộc tính để lưu tên kênh động
+
+    public function __construct($message, $index_question, $channelName) // 💡 THÊM: Nhận tên kênh
     {
         // Gán giá trị vào thuộc tính public
         $this->message = $message; 
-    }
-    public function broadcastOn()
-    {
-        // Sử dụng Channel, KHÔNG cần xác thực
-        return new Channel('chat.1.2'); 
-    }
-    public function broadcastAs()
-    {
-        return 'message.sent'; 
+        $this->index_question = $index_question;
+        $this->channelName = $channelName; // Gán tên kênh
     }
 
-    // Quan trọng: Chỉ gửi nội dung message mà frontend cần
+    public function broadcastOn()
+    {
+        // 💡 SỬA LỖI: Sử dụng tên kênh động (ví dụ: 'default-gamequiz-channel')
+        return new Channel($this->channelName); 
+    }
+    
+    public function broadcastAs()
+    {
+        // Tên sự kiện (phải khớp với .listen('.quiz.message.sent', ...) trong React)
+        return 'quiz.message.sent'; 
+    }
+
+    // 💡 ĐÃ SỬA LỖI LOGIC TĂNG INDEX
     public function broadcastWith()
     {
         return [
-            'message' => $this->message, // Frontend sẽ truy cập data.message
-            // Có thể thêm 'user_id', 'timestamp', v.v.
+            'message' => $this->message,
+            // 💡 CHỈ SỬ DỤNG GIÁ TRỊ NHẬN ĐƯỢC (đã là chỉ số kế tiếp)
+            'index_question' => $this->index_question 
         ];
     }
 }

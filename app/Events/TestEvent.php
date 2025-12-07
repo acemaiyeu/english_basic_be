@@ -29,19 +29,21 @@ class TestEvent
      */
     public function broadcastOn()
     {
-        return new Channel('chat.1.2'); 
+        return new Channel('default-gamequiz-channel'); 
     }
 
     public function broadcastAs()
     {
-        return 'message.sent'; 
+        return 'quiz.message.sent'; 
     }
 
     // Quan trọng: Chỉ gửi nội dung message mà frontend cần
     public function broadcastWith()
     {
         return [
-            'message' => $this->message, // Frontend sẽ truy cập data.message
+            'message' => $this->message, 
+            'index_question' => $this->index_question + 1
+            // Frontend sẽ truy cập data.message
             // Có thể thêm 'user_id', 'timestamp', v.v.
         ];
     }

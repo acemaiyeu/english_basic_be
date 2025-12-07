@@ -12,6 +12,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
 use App\Events\MessageSent; // Đảm bảo import Event của bạn
+use App\Http\Controllers\ExportController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,6 +42,8 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('profile', [AuthController::class, 'me']);
 });
+
+Route::get('/questions', [QuestionController::class, 'getListQuestions']);
 
 // Route POST ban đầu (dùng để gửi Job)
 Route::get('/list-lessons', [EnglishBasicController::class, 'getListLesson']);
@@ -108,6 +111,11 @@ Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     Route::post('/listen', [ListenWriteController::class, 'create']);
     Route::put('/listen/{id}', [ListenWriteController::class, 'update']);
     Route::delete('/listen/{id}', [ListenWriteController::class, 'delete']);
+
+        Route::get('/export', [ExportController::class, 'export']);
+    Route::get('/export-lesson', [ExportController::class, 'exportLesson']);
+    Route::get('/export-vocabulary', [ExportController::class, 'exportVocabulary']);
+    Route::get('/export-questions', [ExportController::class, 'exportQuestion']);
     
 });
 
@@ -124,12 +132,14 @@ Route::post('/send-message', function (Request $request) {
     $request->validate(['message' => 'required|string']);
 
     $messageContent = $request->input('message');
+    $indexQuestion = $request->input('index_question', 0);
+    $channel = $request->input('channel', 'default-gamequiz-channel'); // Kênh mặc định nếu không có đầu vào
     // $channel = $request->input('channel'); // Dùng nếu muốn kênh động
 
     // 2. Phát sự kiện WebSocket
     // Sử dụng Event đã được cấu hình với Channel('chat.1.2') và broadcastAs('message.sent')
-    event(new MessageSent($messageContent)); 
+    event(new MessageSent($messageContent, $indexQuestion, $channel)); 
 
     // 3. Trả về thành công
-    return response()->json(['status' => 'success', 'message' => $messageContent]);
+    return response()->json(['status' => 'success', 'message' => $messageContent, 'index_question' => $indexQuestion]);
 });
