@@ -63,7 +63,9 @@ Route::get('/game/{id}', [GameController::class, 'getDetail']);
 
 
 Route::post('/chat-ai', [ChatController::class, 'chat']);
-
+Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
+ Route::get('/question/{id}', [QuestionController::class, 'getListQuestions']);
+    
 Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     //Lesson Management
     Route::get('/lessons', [EnglishBasicController::class, 'getLessons']);
@@ -121,10 +123,10 @@ Route::middleware(['admin.api'])->prefix('admin')->group(function () {
 
 
 
-Route::post('/send-message', function (Illuminate\Http\Request $request) {
-    broadcast(new MessageSent($request->user, $request->message))->toOthers();
-    return response()->json(['status' => 'Message broadcasted!']);
-});
+// Route::post('/send-message', function (Illuminate\Http\Request $request) {
+//     broadcast(new MessageSent($request->user, $request->message))->toOthers();
+//     return response()->json(['status' => 'Message broadcasted!']);
+// });
 
 
 Route::post('/send-message', function (Request $request) {
@@ -134,12 +136,13 @@ Route::post('/send-message', function (Request $request) {
     $messageContent = $request->input('message');
     $indexQuestion = $request->input('index_question', 0);
     $channel = $request->input('channel', 'default-gamequiz-channel'); // Kênh mặc định nếu không có đầu vào
+    $user = $request->input('user', 'Guest');
     // $channel = $request->input('channel'); // Dùng nếu muốn kênh động
 
     // 2. Phát sự kiện WebSocket
     // Sử dụng Event đã được cấu hình với Channel('chat.1.2') và broadcastAs('message.sent')
-    event(new MessageSent($messageContent, $indexQuestion, $channel)); 
+    event(new MessageSent($messageContent, $indexQuestion, $channel, $user)); 
 
     // 3. Trả về thành công
-    return response()->json(['status' => 'success', 'message' => $messageContent, 'index_question' => $indexQuestion]);
+    return response()->json(['status' => 'success', 'message' => $messageContent, 'index_question' => $indexQuestion, 'total_users' => \App\Helpers\WebSocketHelper::getTotalUsersInChannel($channel)]);
 });

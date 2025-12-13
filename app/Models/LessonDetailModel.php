@@ -97,10 +97,12 @@ class LessonDetailModel {
             $detail->means = $request['means'] ?? $detail->means;
             $detail->sound = $request['sound'] ?? $detail->sound;
             if($request['process']){
-               $users_temp = json_decode($detail->result_users, true) ?? []; // true để trả về mảng thay vì object
+               $users_temp = json_decode($detail->result_users, true) ?? []; 
+               $process = $request['process'];
+               // true để trả về mảng thay vì object
                 $users_temp[] = [
                     'device' => $request->header('User-Agent'),
-                    'process' => $request['process'],
+                    'process' => $process > 100 ? 100 : $process,
                 ];
                 $detail->result_users = json_encode($users_temp);
             }            

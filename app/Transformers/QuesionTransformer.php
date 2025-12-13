@@ -39,6 +39,7 @@ class QuesionTransformer extends TransformerAbstract
             'type' => $question->type,
             'answers' => $question->answers??[],
             'lessonDetail'  => $question->lessonDetail,
+            'answer' => $question->answer??"",
         ];
     }
 }
