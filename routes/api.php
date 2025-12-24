@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
 use App\Events\MessageSent; // Đảm bảo import Event của bạn
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ReaddingController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,12 +32,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // routes/api.php
 
 
-
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('login', [AuthController::class, 'login']);
+    
     Route::post('login-admin', [AuthController::class, 'loginAdmin']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -65,6 +67,14 @@ Route::get('/game/{id}', [GameController::class, 'getDetail']);
 Route::post('/chat-ai', [ChatController::class, 'chat']);
 Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
  Route::get('/question/{id}', [QuestionController::class, 'getListQuestions']);
+
+ //Readding
+    Route::get('/readings', [ReaddingController::class, 'getListReaddings']);
+    Route::get('/reading/{url}', [ReaddingController::class, 'getDetailReadding']);
+    Route::post('/reading', [ReaddingController::class, 'create']);
+    Route::put('/reading/{url}', [ReaddingController::class, 'update']);
+    Route::delete('/reading/{url}', [ReaddingController::class, 'delete']);
+
     
 Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     //Lesson Management

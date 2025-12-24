@@ -13,7 +13,7 @@ class AuthController extends Controller
     // Constructor để áp dụng middleware (trừ login)
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'loginAdmin']]);
+        $this->middleware('auth:api', ['except' => ['login', 'loginAdmin', 'register']]);
     }
 
     // 1. Đăng nhập và lấy Token
@@ -26,6 +26,22 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+    public function register()
+    {
+        $credentials = request(['email', 'password', 'name']);
+        $check = \App\Models\User::where('email', $credentials['email'])->first();
+        if($check){
+            return response()->json(['error' => 'Email already exists'], 400);
+        }
+        $user = new \App\Models\User();
+        $user->email = $credentials['email'];
+        $user->password = bcrypt($credentials['password']);
+        $user->name =  $credentials['name'];
+        $user->role_id = Role::whereNull('deleted_at')->where('code', 'GUEST')->first()->id;
+        $user->save();
+
+        return $this->login();
     }
     public function loginAdmin()
     {

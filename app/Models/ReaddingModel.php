@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
-use App\Models\Question;
+use App\Models\Readding;
 
-class QuestionModel {
+class ReaddingModel {
 
 
-    public function getListQuestions($request) {
-        $query = Question::query();
+    public function getListReadding($request) {
+        $query = Readding::query();
         $query->whereNull('deleted_at');
-        if(!empty($request['id'])){
-            $query->where('id', $request['id']);
+        if(!empty($request['url'])){
+            $query->where('url', $request['url']);
         }
         if(!empty($request['lesson_detail_id'])){
             $query->whereHas('lessonDetail', function($q) use ($request){
@@ -32,11 +32,11 @@ class QuestionModel {
             });
         }
         
-        if(!empty($request['title_english'])){
-            $query->where('title_english', 'like', '%'.$request['title_english'].'%');
+        if(!empty($request['title'])){
+            $query->where('title', 'like', '%'.$request['title'].'%');
         }
-        if(!empty($request['title_vietnamese'])){
-            $query->where('title_vietnamese', 'like', '%'.$request['title_vietnamese'].'%');
+        if(!empty($request['type'])){
+            $query->where('type',$request['type']);
         }
         if(!empty($request['vocabulary_name'])){
             $query->whereHas('details', function($q) use ($request){
@@ -45,7 +45,7 @@ class QuestionModel {
         }
 
         $limit = $request['limit'] ?? 10;
-        $query->with('answers','lessonDetail');
+        // $query->with('answers','lessonDetail');
         if($limit === 1){
             return $query->first();
         }else{
@@ -53,43 +53,44 @@ class QuestionModel {
         }
     }
     function create($request) {
-        $question = new Question();
+        $readding = new Readding();
         try{
             DB::beginTransaction();
-            $question->lesson_detail_id = $request['lesson_detail_id'];
-            $question->title_english = $request['title_english'];
-            $question->title_vietnamese = $request['title_english'];
-            $question->type = $request['type'];
-            $question->save();
+            $readding->url = Str::upper(Str::slug($request['title']));
+            $readding->title = $request['title'];
+            $readding->audio_url = $request['audio_url'];
+            $readding->type = $request['type'];
+            $readding->words = $request['words'];
+            $readding->save();
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
             throw $e;
         }
         
-        return $question;
+        return $readding;
     }
 
     function update($request, $id) {
-        $question = Question::find($id);
-        if (!$question) {
-            throw new \Exception('Question not found');
+        $readding = Readding::find($id);
+        if (!$readding) {
+            throw new \Exception('readding not found');
         }
         
         try {
             DB::beginTransaction();
-            $question->title_english = $request['title_english']??$question->title_english;
-            $question->title_vietnamese = $request['title_english']??$question->title_english;
-            $question->type = $request['type']??$question->type;
-            $question->answer = $request['answer_id']??$question->answer;
-            $question->save();
-            
+            $readding->url = Str::upper(Str::slug($request['title']));
+            $readding->title = $request['title']??$readding->title;
+            $readding->audio_url = $request['audio_url']??$readding->audio_url;
+            $readding->type = $request['type']??$readding->type;
+            $readding->words = $request['words']??$readding->words;
+            $readding->save();
             DB::commit();
         } catch(\Exception $e) {
             DB::rollBack();
             throw $e;
         }
-        // dd($question);
-        return $question;
+        // dd($readding);
+        return $readding;
     }
 }
