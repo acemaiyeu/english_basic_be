@@ -7,12 +7,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Transformers\UserTransformer;
+use App\Models\UserModel;
 
 class AuthController extends Controller
 {
     // Constructor để áp dụng middleware (trừ login)
-    public function __construct()
+    protected  $UserModel;
+    public function __construct(UserModel $model)
     {
+        $this->UserModel = $model;
         $this->middleware('auth:api', ['except' => ['login', 'loginAdmin', 'register']]);
     }
 
@@ -85,5 +88,10 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60 // Thời gian hết hạn (giây)
         ]);
+    }
+    public function update(Request $req)
+    {
+        $user = $this->UserModel->update($req, auth()->user()->id);
+        return fractal($user, new UserTransformer())->respond();
     }
 }

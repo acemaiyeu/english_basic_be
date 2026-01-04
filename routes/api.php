@@ -14,6 +14,7 @@ use App\Http\Controllers\GameController;
 use App\Events\MessageSent; // Đảm bảo import Event của bạn
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ReaddingController;
+use App\Http\Controllers\InspirationalQuotesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,6 +44,7 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('profile', [AuthController::class, 'me']);
+    Route::put('user', [AuthController::class, 'update']);
 });
 
 Route::get('/questions', [QuestionController::class, 'getListQuestions']);
@@ -74,6 +76,10 @@ Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::post('/reading', [ReaddingController::class, 'create']);
     Route::put('/reading/{url}', [ReaddingController::class, 'update']);
     Route::delete('/reading/{url}', [ReaddingController::class, 'delete']);
+
+
+    Route::get('/quotes-random', [InspirationalQuotesController::class, 'getDetailRandom']);
+    
 
     
 Route::middleware(['admin.api'])->prefix('admin')->group(function () {
