@@ -14,6 +14,7 @@ use App\Http\Controllers\GameController;
 use App\Events\MessageSent; // Đảm bảo import Event của bạn
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ReaddingController;
+use App\Http\Controllers\GrammarController;
 use App\Http\Controllers\InspirationalQuotesController;
 /*
 |--------------------------------------------------------------------------
@@ -77,11 +78,18 @@ Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::put('/reading/{url}', [ReaddingController::class, 'update']);
     Route::delete('/reading/{url}', [ReaddingController::class, 'delete']);
 
+     //Grammar
+    Route::get('/grammars', [GrammarController::class, 'getAll']);
+    Route::get('/grammar/{url}', [GrammarController::class, 'getDetail']);
+    Route::post('/grammar', [GrammarController::class, 'create']);
+    Route::put('/grammar/{url}', [GrammarController::class, 'update']);
+    Route::delete('/grammar/{url}', [GrammarController::class, 'delete']);
+
 
     Route::get('/quotes-random', [InspirationalQuotesController::class, 'getDetailRandom']);
     
 
-    
+     Route::get('/lesson-detail-by-lesson-id/{lesson_id}', [LessonDetailController::class, 'getListDetailsByLesson']);
 Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     //Lesson Management
     Route::get('/lessons', [EnglishBasicController::class, 'getLessons']);
@@ -93,7 +101,7 @@ Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     Route::get('/lesson-detail/{id}', [LessonDetailController::class, 'getDetail']);
     Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::get('/lesson-detail-by-title/{title}', [LessonDetailController::class, 'getDetailByTitle']);
-    Route::get('/lesson-detail-by-lesson-id/{lesson_id}', [LessonDetailController::class, 'getListDetailsByLesson']);
+   
     Route::post('/lesson-detail', [LessonDetailController::class, 'createDetail']);
     Route::post('/lesson-detail-ipa', [LessonDetailController::class, 'createDetailForIPA']);
     

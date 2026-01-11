@@ -61,7 +61,8 @@ class ListLessonDetailTransformer extends TransformerAbstract
             'lesson_id' => $lessonDetail->lesson_id,
             'process' => $process,
             'userAgent' => $this->userAgent,
-            'img' => $this->img??""
+            'type'    => $lessonDetail->type,
+            'img' => $lessonDetail->img??""
         ];
     }
 }
