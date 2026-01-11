@@ -52,6 +52,7 @@ class LessonDetailModel {
             $detail->title_vietnamese = $request['title_english'];
             $detail->transcription = $request['transcription'];
             $detail->means = $request['means'];
+            $detail->img = $request['img'];
             $detail->save();
             DB::commit();
         }catch(\Exception $e){
@@ -106,7 +107,8 @@ class LessonDetailModel {
                 ];
                 $detail->result_users = json_encode($users_temp);
             }            
-            $detail->type = $request['type'] ?? $detail->type; 
+            $detail->type = $request['type'] ?? $detail->type;
+            $detail->img = $request['img'] ?? $detail->img; 
             $detail->save();
             DB::commit();
         }catch(\Exception $e){
