@@ -60,7 +60,8 @@ class ListLessonDetailTransformer extends TransformerAbstract
             'means' => $lessonDetail->means??"",
             'lesson_id' => $lessonDetail->lesson_id,
             'process' => $process,
-            'userAgent' => $this->userAgent
+            'userAgent' => $this->userAgent,
+            'img' => $this->img??""
         ];
     }
 }
