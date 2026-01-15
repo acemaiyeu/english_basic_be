@@ -78,13 +78,7 @@ Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::put('/reading/{url}', [ReaddingController::class, 'update']);
     Route::delete('/reading/{url}', [ReaddingController::class, 'delete']);
 
-     //Grammar
-    Route::get('/grammars', [GrammarController::class, 'getAll']);
-    Route::get('/grammar/{url}', [GrammarController::class, 'getDetail']);
-    Route::post('/grammar', [GrammarController::class, 'create']);
-    Route::put('/grammar/{url}', [GrammarController::class, 'update']);
-    Route::delete('/grammar/{url}', [GrammarController::class, 'delete']);
-
+     
 
     Route::get('/quotes-random', [InspirationalQuotesController::class, 'getDetailRandom']);
     
@@ -96,12 +90,21 @@ Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     Route::post('/lesson', [EnglishBasicController::class, 'createLesson']);
     Route::put('/lesson', [EnglishBasicController::class, 'updateLesson']);
     Route::delete('/lesson/{id}', [EnglishBasicController::class, 'deleteLesson']);
+
+    //
+    //Grammar
+    Route::get('/grammars', [GrammarController::class, 'getAll']);
+    Route::get('/grammar/{url}', [GrammarController::class, 'getDetail']);
+    Route::post('/grammar', [GrammarController::class, 'create']);
+    Route::put('/grammar/{url}', [GrammarController::class, 'update']);
+    Route::delete('/grammar/{url}', [GrammarController::class, 'delete']);
+
     // Lesson Detail Management
     Route::get('/lesson-details', [LessonDetailController::class, 'getListDetails']);
     Route::get('/lesson-detail/{id}', [LessonDetailController::class, 'getDetail']);
     Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::get('/lesson-detail-by-title/{title}', [LessonDetailController::class, 'getDetailByTitle']);
-   
+   Route::get('/lesson-detail-by-lesson-id/{lesson_id}', [LessonDetailController::class, 'getListDetailsByLesson']);
     Route::post('/lesson-detail', [LessonDetailController::class, 'createDetail']);
     Route::post('/lesson-detail-ipa', [LessonDetailController::class, 'createDetailForIPA']);
     

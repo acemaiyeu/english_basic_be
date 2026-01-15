@@ -54,10 +54,10 @@ class GrammarModel {
             $grammar->title_english = $request['title_english'];
             $grammar->title_vietnamese = $request['title_vietnamese'];
             $grammar->save();
-            if(!empty($request['detail'])){
+            if(!empty($request['details'])){
                 $dataToInsert = [];
 
-                foreach($request['detail'] as $detail) {
+                foreach($request['details'] as $detail) {
                     $dataToInsert[] = [
                         'grammar_id' => $grammar->id,
                         'data'       => $detail['data'],
