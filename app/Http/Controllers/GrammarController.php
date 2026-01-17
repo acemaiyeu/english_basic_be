@@ -22,8 +22,8 @@ class GrammarController extends Controller
        $list =  $this->grammarModel->getAll($re);
        return fractal($list, new GrammarTransformer())->respond();
     }
-    function getDetailReadding ($url, Request $re) {
-       $re['url'] = $url;
+    function getDetail ($id, Request $re) {
+       $re['id'] = $id;
        $re['limit'] = 1;
        $list =  $this->grammarModel->getAll($re);
        return fractal($list, new GrammarTransformer())->respond();

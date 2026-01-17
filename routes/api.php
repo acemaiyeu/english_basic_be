@@ -78,7 +78,8 @@ Route::put('/lesson-detail/{id}', [LessonDetailController::class, 'update']);
     Route::put('/reading/{url}', [ReaddingController::class, 'update']);
     Route::delete('/reading/{url}', [ReaddingController::class, 'delete']);
 
-     
+     Route::get('/grammars', [GrammarController::class, 'getAll']);
+     Route::get('/grammar/{id}', [GrammarController::class, 'getDetail']);
 
     Route::get('/quotes-random', [InspirationalQuotesController::class, 'getDetailRandom']);
     

@@ -12,8 +12,8 @@ class GrammarModel {
     public function getAll($request) {
         $query = Grammar::query();
         $query->whereNull('deleted_at');
-        if(!empty($request['url'])){
-            $query->where('url', $request['url']);
+        if(!empty($request['id'])){
+            $query->where('id', $request['id']);
         }
         // if(!empty($request['lesson_detail_id'])){
         //     $query->whereHas('lessonDetail', function($q) use ($request){
