@@ -95,9 +95,10 @@ Route::middleware(['admin.api'])->prefix('admin')->group(function () {
     //
     //Grammar
     Route::get('/grammars', [GrammarController::class, 'getAll']);
-    Route::get('/grammar/{url}', [GrammarController::class, 'getDetail']);
+    Route::get('/grammar-title', [GrammarController::class, 'getAll']);
+    Route::get('/grammar/{id}', [GrammarController::class, 'getDetail']);
     Route::post('/grammar', [GrammarController::class, 'create']);
-    Route::put('/grammar/{url}', [GrammarController::class, 'update']);
+    Route::put('/grammar/{id}', [GrammarController::class, 'update']);
     Route::delete('/grammar/{url}', [GrammarController::class, 'delete']);
 
     // Lesson Detail Management

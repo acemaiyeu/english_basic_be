@@ -85,7 +85,6 @@ class GrammarModel {
         
         try {
             DB::beginTransaction();
-            $grammar->url = Str::upper(Str::slug($request['title']));
             $grammar->title_english = $request['title_english']??$grammar->title_english;
             $grammar->title_vietnamese = $request['title_vietnamese']??$grammar->title_vietnamese;
             if(!empty($request['details'])){
@@ -95,10 +94,11 @@ class GrammarModel {
                 //     ]);
                 // }
 
-                $dataToUpdate = collect($request['details'])->map(function ($detail) {
+                $dataToUpdate = collect($request['details'])->map(function ($detail) use($grammar) {
                     return [
-                        'id'   => $detail->id,
-                        'data' => $detail->data,
+                        'id'   => $detail['id']??null,
+                        'data' => $detail['data'],
+                        'grammar_id' => $detail['grammar_id']??$grammar->id,
                         'updated_at' => now()
                     ];
                 })->toArray();
